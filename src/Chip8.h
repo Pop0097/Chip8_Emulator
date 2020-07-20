@@ -78,10 +78,11 @@ private:
     void OP_Fx55(); //store registers V0 through Vx in memory starting at location I
     void OP_Fx65(); //read registers V0 through Vx from memory starting at location I
 
+    //defines member variables that will be used to put random numbers into registers
     std::default_random_engine randGen;
     std::uniform_int_distribution<uint8_t> randByte;
 
-    typedef void (Chip8::*Chip8Func)();
+    typedef void (Chip8::*Chip8Func)(); //defines a pointer to functions
 	Chip8Func table[0xF + 1]{&Chip8::OP_NULL};
 	Chip8Func table0[0xE + 1]{&Chip8::OP_NULL};
 	Chip8Func table8[0xE + 1]{&Chip8::OP_NULL};

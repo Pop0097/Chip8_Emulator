@@ -34,13 +34,14 @@ const unsigned int FONTSET_START_ADD = 0x50;
 Chip8::Chip8():randGen(std::chrono::system_clock::now().time_since_epoch().count()) //seed random number generator into the constructor with system clock
 {
     pc = START_ADD; //initialize the program counter
+
     for(int i = 0; i < FONTSET_SIZE; i++) { //loads fontset into memory
         memory[FONTSET_START_ADD + i] = chip8_fontset[i];
     }
     
     randByte = std::uniform_int_distribution<uint8_t>(0, 255U); //initialize random number generator. With this we can get number between 0 and 255
 
-    // Set up function pointer table
+    // Set up function pointer table. Each element executes a different instructino of the CHIP-8 emulator
     table[0x0] = &Chip8::Table0;
     table[0x1] = &Chip8::OP_1nnn;
     table[0x2] = &Chip8::OP_2nnn;
@@ -108,13 +109,20 @@ void Chip8::loadROM(char const* romfile) {
 }
 
 void Chip8::Cycle() {
-	// Fetch
-	opcode = (memory[pc] << 8u) | memory[pc + 1];
+	/*
+		A cycle includes three things:
+			1. fetch next instructino in the form of an opcode
+			2. decode the instruction to determine what operation needs to occur (done using "table" function pointer)
+			3. execute the instruction (done in instruction methods below)
+	*/
 
-	// Increment the PC before we execute anything
-	pc += 2;
+	// Fetchches instruction 
+	opcode = (memory[pc] << 8u) | memory[pc + 1]; //Get first digit of OP code with a bitmask and shift so it becmes a single digit from $0 to $F
 
-	// Decode and Execute
+	// Increment the PC before we execute anything (prevents a continuous loop from occuring)
+	pc += 2; 
+
+	// Tables decode the opcode and then call one instruction accordingly
 	((*this).*(table[(opcode & 0xF000u) >> 12u]))();
 
 	// Decrement the delay timer if it's been set
@@ -152,22 +160,38 @@ void Chip8::OP_00E0() {
 }
 
 void Chip8::OP_00EE() {
-	--sp;
-	pc = stack[sp];
+	/* 
+		CPUs use a stack to keep track of the order of execution when it calls functions/routines. 
+		Like stack navigation in React JS, when you call a sub routine, the sub routine will run on the next level of the CPU stack, meaning if you want to 
+		go back to the task that called the subroutine, you will have to move down one level in the stack. 
+		This is what this function does, it goes down one level in the stack to exit the sub routine and go to the routine that called it. 
+	 */
+
+	--sp; //reduces stack level by 1 to access calling process
+	pc = stack[sp]; //resets program counter to reflect new stack position
 }
 
 void Chip8::OP_1nnn() {
-	uint16_t address = opcode & 0x0FFFu;
+	/*
+		We want to jump to a different location or register. 
+		This jump does not remember the origin, so there is no stack interaction (notice we did not change "sp")
+	*/
 
-	pc = address;
+	//NOTE the "u" is added to be 100% sure the number is unsigned
+	uint16_t address = opcode & 0x0FFFu; //conducts binary AND operator to get new address
+
+	pc = address; //program counter is set to new address
 }
 
 void Chip8::OP_2nnn() {
-	uint16_t address = opcode & 0x0FFFu;
+	/*
+		When we call a sub routine, we want to return to the original "calling" routine. 
+	*/
+	uint16_t address = opcode & 0x0FFFu; //defines address of where sub routine will take place
 
-	stack[sp] = pc;
-	++sp;
-	pc = address;
+	stack[sp] = pc; //stores current routine at the top of the stack
+	++sp; //increments stack pointer to point at the sub routine
+	pc = address; //program counter is set to the address of the sub routine
 }
 
 void Chip8::OP_3xkk() {
