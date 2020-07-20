@@ -30,6 +30,7 @@ public:
     ~Chip8();
     void loadROM(char const*);
 
+    
 
 };
 
