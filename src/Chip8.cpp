@@ -2,7 +2,7 @@
 // Created by Dhruv Rawat on 2020-07-08.
 //
 
-#include "Chip8.h"
+#include "Classes.h"
 
 /*Fonts and text*/
 //16 characters at 5 bytes each (5*16 = 80 array elements)
@@ -41,9 +41,9 @@ Chip8::Chip8():randGen(std::chrono::system_clock::now().time_since_epoch().count
     
     randByte = std::uniform_int_distribution<uint8_t>(0, 255U); //initialize random number generator. With this we can get number between 0 and 255
 
-    // Set up function pointer table. Each element executes a different instructino of the CHIP-8 emulator
+    // Set up function pointer table. Each element executes a different instructions of the CHIP-8 emulator
     table[0x0] = &Chip8::Table0;
-    table[0x1] = &Chip8::OP_1nnn;
+    table[0x1] = &Chip8::OP_1nnn; 
     table[0x2] = &Chip8::OP_2nnn;
     table[0x3] = &Chip8::OP_3xkk;
     table[0x4] = &Chip8::OP_4xkk;
@@ -86,7 +86,7 @@ Chip8::Chip8():randGen(std::chrono::system_clock::now().time_since_epoch().count
     tableF[0x65] = &Chip8::OP_Fx65;
 }
 //loads contents from ROM file into memory so we can execute instructions
-void Chip8::loadROM(char const* romfile) {
+void Chip8::loadROM(const char* romfile) {
 
     std::ifstream file(romfile, std::ios::binary | std::ios::ate);  //open file as a stream of binary. File pointer moved to the end
 
@@ -493,7 +493,7 @@ void Chip8::OP_Fx29() {
 }
 
 void Chip8::OP_Fx33() {
-	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+	uint8_t Vx = (opcode & 0x0F00u) >> 8u; //the >> operator means shift along the binary
 	uint8_t value = V[Vx];
 
 	// Ones-place

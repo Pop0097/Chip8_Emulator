@@ -6,7 +6,9 @@
 #include <chrono>
 #include <random>
 #include <cstring>
+#include "/Library/Frameworks/SDL2.framework/Headers/SDL.h"
 #include <fstream> //input output stream class to operate on files
+
 
 #ifndef CHIP_8_H
 #define CHIP_8_H
@@ -91,12 +93,35 @@ private:
 
 public:
     Chip8();
-    void loadROM(char const*); 
+    void loadROM(const char*); 
     void Cycle();
 
     uint8_t keypad[16]{}; //Hex based keypad (0x0 to 0xF)
     uint32_t video[64 * 32]{}; //Black and white graphics with a total of 2048 pixels with a state of either 0 or 1)
-
 };
 
 #endif
+
+
+#ifndef PLATFORM_H
+#define PLATFORM_H
+
+class SDL_Window;
+class SDL_Renderer; //gives program 2D GPU acceleration
+class SDL_Texture; //makes it easy to render a 2D image
+
+class Platform {
+private:
+    SDL_Window* window{};
+    SDL_Renderer* renderer{};
+    SDL_Texture* texture{};
+
+public:
+    Platform(const char*, int, int, int, int);
+    ~Platform();
+    void update(const void*, int);
+    bool processInput(uint8_t*);
+};
+
+#endif
+
