@@ -1,6 +1,6 @@
 #include "Classes.h"
 
-Platform::Platform(const char* t, int width, int height, int textureWidth /*Width of texture in pixels*/, int textureHeight) {
+Platform::Platform(char const* t, int width, int height, int textureWidth /*Width of texture in pixels*/, int textureHeight) {
     SDL_Init(SDL_INIT_VIDEO); //Initializes SDL 
     window = SDL_CreateWindow(t, 0, 0, width, height, SDL_WINDOW_SHOWN); //creates window
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED); //creates renderer which will accelerate 2D GPU processing
@@ -15,7 +15,7 @@ Platform::~Platform() {
     SDL_Quit(); 
 }
 
-void Platform::update(const void* buffer, int pitch) {
+void Platform::update(void const* buffer, int pitch) {
     SDL_UpdateTexture(texture, nullptr /*represents area to update (null = update entire texture)*/, buffer, pitch); //updates texture rectangle with new pixel data
     SDL_RenderClear(renderer); //Clears rendering target with the drawing colour
     SDL_RenderCopy(renderer, texture, nullptr /*Entire texture*/, nullptr /*Entire rendering target*/); //copy texture to current rendering target

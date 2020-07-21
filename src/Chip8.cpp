@@ -86,7 +86,7 @@ Chip8::Chip8():randGen(std::chrono::system_clock::now().time_since_epoch().count
     tableF[0x65] = &Chip8::OP_Fx65;
 }
 //loads contents from ROM file into memory so we can execute instructions
-void Chip8::loadROM(const char* romfile) {
+void Chip8::loadROM(char const* romfile) {
 
     std::ifstream file(romfile, std::ios::binary | std::ios::ate);  //open file as a stream of binary. File pointer moved to the end
 
@@ -105,7 +105,6 @@ void Chip8::loadROM(const char* romfile) {
 
         delete[] buffer; //empty buffer
     }
-
 }
 
 void Chip8::Cycle() {
@@ -152,7 +151,7 @@ void Chip8::TableF() {
     ((*this).*(tableF[opcode & 0x00FFu]))();
 }
 
-void OP_NULL() {}
+void Chip8::OP_NULL() {}
 
 /* Chip8 instructions */
 void Chip8::OP_00E0() {

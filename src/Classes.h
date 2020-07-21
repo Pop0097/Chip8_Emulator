@@ -6,12 +6,8 @@
 #include <chrono>
 #include <random>
 #include <cstring>
-#include "/Library/Frameworks/SDL2.framework/Headers/SDL.h"
+#include <SDL2/SDL.h>
 #include <fstream> //input output stream class to operate on files
-
-
-#ifndef CHIP_8_H
-#define CHIP_8_H
 
 /* other constants */
 const unsigned int KEY_COUNT = 16;
@@ -21,22 +17,26 @@ const unsigned int STACK_LEVELS = 16;
 const unsigned int VIDEO_HEIGHT = 32;
 const unsigned int VIDEO_WIDTH = 64;
 
+
+#ifndef CHIP_8_H
+#define CHIP_8_H
+
 class Chip8 {
 private:
     uint16_t opcode; //Current op code (needs to store two bytes)
 
-    uint8_t V[16]{}; //CPU registers (V0 to VF) (8-bit general purpose registers)
-    uint8_t memory[4096]{}; //Memory (Chip 8 has 4K memory in total)
-    uint16_t I{}; //index register (value ranges from 0x000 to 0xFFF)
-    uint16_t pc{};//program counter (value ranges from 0x000 to 0xFFF)
+    uint8_t V[16]; //CPU registers (V0 to VF) (8-bit general purpose registers)
+    uint8_t memory[4096]; //Memory (Chip 8 has 4K memory in total)
+    uint16_t I; //index register (value ranges from 0x000 to 0xFFF)
+    uint16_t pc;//program counter (value ranges from 0x000 to 0xFFF)
 
     //Stack used to remember the current location before a jump to an address or subroutine is performed
-    uint16_t stack[16]{};
-    uint8_t sp{}; //used to remember which level of the stack is used to store the current location
+    uint16_t stack[16];
+    uint8_t sp; //used to remember which level of the stack is used to store the current location
 
     //timer registers that count at 60 Hz.
-    uint8_t delayTimer{};
-    uint8_t soundTimer{}; //system buzzer sounds when this timer reaches 0
+    uint8_t delayTimer;
+    uint8_t soundTimer; //system buzzer sounds when this timer reaches 0
 
     void Table0();
     void Table8();
@@ -85,19 +85,19 @@ private:
     std::uniform_int_distribution<uint8_t> randByte;
 
     typedef void (Chip8::*Chip8Func)(); //defines a pointer to functions
-	Chip8Func table[0xF + 1]{&Chip8::OP_NULL};
-	Chip8Func table0[0xE + 1]{&Chip8::OP_NULL};
-	Chip8Func table8[0xE + 1]{&Chip8::OP_NULL};
-	Chip8Func tableE[0xE + 1]{&Chip8::OP_NULL};
-	Chip8Func tableF[0x65 + 1]{&Chip8::OP_NULL};
+	Chip8Func table[0xF + 1] = {&Chip8::OP_NULL};
+	Chip8Func table0[0xE + 1] = {&Chip8::OP_NULL};
+	Chip8Func table8[0xE + 1] = {&Chip8::OP_NULL};
+	Chip8Func tableE[0xE + 1] = {&Chip8::OP_NULL};
+	Chip8Func tableF[0x65 + 1] = {&Chip8::OP_NULL};
 
 public:
     Chip8();
-    void loadROM(const char*); 
+    void loadROM(char const*); 
     void Cycle();
 
-    uint8_t keypad[16]{}; //Hex based keypad (0x0 to 0xF)
-    uint32_t video[64 * 32]{}; //Black and white graphics with a total of 2048 pixels with a state of either 0 or 1)
+    uint8_t keypad[16]; //Hex based keypad (0x0 to 0xF)
+    uint32_t video[64 * 32]; //Black and white graphics with a total of 2048 pixels with a state of either 0 or 1)
 };
 
 #endif
@@ -112,14 +112,14 @@ class SDL_Texture; //makes it easy to render a 2D image
 
 class Platform {
 private:
-    SDL_Window* window{};
-    SDL_Renderer* renderer{};
-    SDL_Texture* texture{};
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+    SDL_Texture* texture;
 
 public:
-    Platform(const char*, int, int, int, int);
+    Platform(char const*, int, int, int, int);
     ~Platform();
-    void update(const void*, int);
+    void update(void const*, int);
     bool processInput(uint8_t*);
 };
 
