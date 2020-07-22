@@ -14,8 +14,8 @@ const unsigned int KEY_COUNT = 16;
 const unsigned int MEMORY_SIZE = 4096;
 const unsigned int REGISTER_COUNT = 16;
 const unsigned int STACK_LEVELS = 16;
-const unsigned int VIDEO_HEIGHT = 32;
-const unsigned int VIDEO_WIDTH = 64;
+const unsigned int VIDEO_HEIGHT = 512;
+const unsigned int VIDEO_WIDTH = 1024;
 
 
 #ifndef CHIP_8_H

@@ -12,16 +12,14 @@ int main(int argc, char** argv) {
 	if (argc != 4) {
 		//std::cerr standared output stream for errors 
 		std::cerr << "Usage: " << argv[0] << " <Scale> <Delay> <Rom>\n";
+		std::exit(EXIT_FAILURE);
 	}
 
     //std::stoi --> interprets a signed integer value in the string argv[x]
-    // int videoScale = std::stoi(argv[1]); // amount video needs to be scaled by (integer scale factor)
-	// int cycleDelay = std::stoi(argv[2]); //Time we want to wait between calling Chip8::Cycle()
+    int videoScale = std::stoi(argv[1]); // amount video needs to be scaled by (integer scale factor)
+	int cycleDelay = std::stoi(argv[2]); //Time we want to wait between calling Chip8::Cycle()
 	const char* romFilename = argv[3]; //romfile that continas instructions for Chip8 emulator 
-    
-	int videoScale = 20;
-	int cycleDelay = 500;
-
+   
     Platform platform("Chip8 Emulator", VIDEO_WIDTH * videoScale, VIDEO_HEIGHT * videoScale, VIDEO_WIDTH, VIDEO_HEIGHT); //creates platform object
 
 	Chip8 emulator; //creates Chip8 object 
