@@ -19,8 +19,8 @@ int main(int argc, char** argv) {
 	// int cycleDelay = std::stoi(argv[2]); //Time we want to wait between calling Chip8::Cycle()
 	const char* romFilename = argv[3]; //romfile that continas instructions for Chip8 emulator 
     
-	int videoScale = 10;
-	int cycleDelay = 2400;
+	int videoScale = 20;
+	int cycleDelay = 500;
 
     Platform platform("Chip8 Emulator", VIDEO_WIDTH * videoScale, VIDEO_HEIGHT * videoScale, VIDEO_WIDTH, VIDEO_HEIGHT); //creates platform object
 
@@ -39,8 +39,9 @@ int main(int argc, char** argv) {
 
 		auto currentTime = std::chrono::high_resolution_clock::now(); //gets current time
 		float dt = std::chrono::duration<float, std::chrono::milliseconds::period>(currentTime - lastCycleTime).count(); // gets time elapsed between currentTime and lastCycleTime
- 
+		// std::cerr << "Delay: " << dt << "\n";
 		if (dt > cycleDelay) { //if time between calling Chip8::Cycle() is adequate, then the method can be called again
+			//std::cerr << "Refreshing screen\n";
 			lastCycleTime = currentTime; //current time becomes the reference time 
 
 			emulator.Cycle(); //runs cycle of Chip8 to execute instruction from the keypad

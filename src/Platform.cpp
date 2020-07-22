@@ -5,6 +5,7 @@ Platform::Platform(char const* t, int width, int height, int textureWidth /*Widt
     window = SDL_CreateWindow(t, 0, 0, width, height, SDL_WINDOW_SHOWN); //creates window
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED); //creates renderer which will accelerate 2D GPU processing
     texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, textureWidth, textureHeight); //initializes variable that will render objects onto the window
+    std::cerr << "Platform created\n";
 }
 
 Platform::~Platform() {
@@ -13,6 +14,7 @@ Platform::~Platform() {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit(); 
+    std::cerr << "DESTROYED\n";
 }
 
 void Platform::update(void const* buffer, int pitch) {
@@ -20,6 +22,7 @@ void Platform::update(void const* buffer, int pitch) {
     SDL_RenderClear(renderer); //Clears rendering target with the drawing colour
     SDL_RenderCopy(renderer, texture, nullptr /*Entire texture*/, nullptr /*Entire rendering target*/); //copy texture to current rendering target
     SDL_RenderPresent(renderer); //update the screen with rendering performed in this method
+    //std::cerr << "Platform updated\n";
 }
 
 bool Platform::processInput(uint8_t* keys) {

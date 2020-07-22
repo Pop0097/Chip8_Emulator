@@ -33,7 +33,7 @@ const unsigned int FONTSET_START_ADD = 0x50;
 
 Chip8::Chip8():randGen(std::chrono::system_clock::now().time_since_epoch().count()) //seed random number generator into the constructor with system clock
 {
-    pc = START_ADD; //initialize the program counter
+	pc = START_ADD; //initialize the program counter
 
     for(int i = 0; i < FONTSET_SIZE; i++) { //loads fontset into memory
         memory[FONTSET_START_ADD + i] = chip8_fontset[i];
@@ -84,6 +84,7 @@ Chip8::Chip8():randGen(std::chrono::system_clock::now().time_since_epoch().count
     tableF[0x33] = &Chip8::OP_Fx33;
     tableF[0x55] = &Chip8::OP_Fx55;
     tableF[0x65] = &Chip8::OP_Fx65;
+	std::cerr << "Chip8 constructed\n";
 }
 //loads contents from ROM file into memory so we can execute instructions
 void Chip8::loadROM(char const* romfile) {
@@ -105,6 +106,7 @@ void Chip8::loadROM(char const* romfile) {
 
         delete[] buffer; //empty buffer
     }
+	std::cerr << "ROM loaded\n";
 }
 
 void Chip8::Cycle() {
@@ -133,6 +135,7 @@ void Chip8::Cycle() {
 	if (soundTimer > 0) {
 		--soundTimer;
 	}
+	//std::cerr << "Ran through cycle\n";
 }
 
 void Chip8::Table0() {
