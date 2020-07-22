@@ -139,30 +139,41 @@ void Chip8::Cycle() {
 }
 
 void Chip8::Table0() {
+	std::cerr << "Table0\n";
     ((*this).*(table0[opcode & 0x000Fu]))();
 }
 
 void Chip8::Table8() {
+	std::cerr << "Table8\n";
     ((*this).*(table8[opcode & 0x000Fu]))();
 }
 
 void Chip8::TableE() {
+	std::cerr << "TableE\n";
     ((*this).*(tableE[opcode & 0x000Fu]))();
 }
 
 void Chip8::TableF() {
+	std::cerr << "TableF\n";
     ((*this).*(tableF[opcode & 0x00FFu]))();
 }
 
-void Chip8::OP_NULL() {}
+void Chip8::OP_NULL() {
+	std::cerr << "Unknown OP code\n"; 
+}
 
 /* Chip8 instructions */
 void Chip8::OP_00E0() {
+
+	std::cerr << "00E0\n";
 
     memset(video, 0, sizeof(video));
 }
 
 void Chip8::OP_00EE() {
+
+	std::cerr << "00EE\n";
+
 	/* 
 		CPUs use a stack to keep track of the order of execution when it calls functions/routines. 
 		Like stack navigation in React JS, when you call a sub routine, the sub routine will run on the next level of the CPU stack, meaning if you want to 
@@ -175,6 +186,8 @@ void Chip8::OP_00EE() {
 }
 
 void Chip8::OP_1nnn() {
+
+	std::cerr << "1nnn\n";
 	/*
 		We want to jump to a different location or register. 
 		This jump does not remember the origin, so there is no stack interaction (notice we did not change "sp")
@@ -187,6 +200,8 @@ void Chip8::OP_1nnn() {
 }
 
 void Chip8::OP_2nnn() {
+
+	std::cerr << "2nnn\n";
 	/*
 		When we call a sub routine, we want to return to the original "calling" routine. 
 	*/
@@ -198,6 +213,9 @@ void Chip8::OP_2nnn() {
 }
 
 void Chip8::OP_3xkk() {
+
+	std::cerr << "3xkk\n";
+
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t byte = opcode & 0x00FFu;
 
@@ -207,6 +225,7 @@ void Chip8::OP_3xkk() {
 }
 
 void Chip8::OP_4xkk() {
+	std::cerr << "4xkk\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t byte = opcode & 0x00FFu;
 
@@ -216,6 +235,7 @@ void Chip8::OP_4xkk() {
 }
 
 void Chip8::OP_5xy0() {
+	std::cerr << "5xy0\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
 
@@ -225,6 +245,7 @@ void Chip8::OP_5xy0() {
 }
 
 void Chip8::OP_6xkk() {
+	std::cerr << "6xkk\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t byte = opcode & 0x00FFu;
 
@@ -232,6 +253,7 @@ void Chip8::OP_6xkk() {
 }
 
 void Chip8::OP_7xkk() {
+	std::cerr << "7xkk\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t byte = opcode & 0x00FFu;
 
@@ -239,6 +261,7 @@ void Chip8::OP_7xkk() {
 }
 
 void Chip8::OP_8xy0() {
+	std::cerr << "8xy0\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
 
@@ -246,6 +269,7 @@ void Chip8::OP_8xy0() {
 }
 
 void Chip8::OP_8xy1() {
+	std::cerr << "8xy1\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
 
@@ -253,6 +277,7 @@ void Chip8::OP_8xy1() {
 }
 
 void Chip8::OP_8xy2() {
+	std::cerr << "8xy2\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
 
@@ -260,6 +285,7 @@ void Chip8::OP_8xy2() {
 }
 
 void Chip8::OP_8xy3() {
+	std::cerr << "8xy3\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
 
@@ -267,6 +293,7 @@ void Chip8::OP_8xy3() {
 }
 
 void Chip8::OP_8xy4() {
+	std::cerr << "8xy4\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
 
@@ -283,6 +310,7 @@ void Chip8::OP_8xy4() {
 }
 
 void Chip8::OP_8xy5() {
+	std::cerr << "8xy5\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
 
@@ -297,6 +325,7 @@ void Chip8::OP_8xy5() {
 }
 
 void Chip8::OP_8xy6() {
+	std::cerr << "8xy6\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 
 	// Save LSB in VF
@@ -306,6 +335,7 @@ void Chip8::OP_8xy6() {
 }
 
 void Chip8::OP_8xy7() {
+	std::cerr << "8xy7\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
 
@@ -320,6 +350,7 @@ void Chip8::OP_8xy7() {
 }
 
 void Chip8::OP_8xyE() {
+	std::cerr << "8xyE\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 
 	// Save MSB in VF
@@ -329,6 +360,7 @@ void Chip8::OP_8xyE() {
 }
 
 void Chip8::OP_9xy0() {
+	std::cerr << "9xy0\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
 
@@ -338,18 +370,21 @@ void Chip8::OP_9xy0() {
 }
 
 void Chip8::OP_Annn() {
+	std::cerr << "Annn\n";
 	uint16_t address = opcode & 0x0FFFu;
 
 	I = address;
 }
 
 void Chip8::OP_Bnnn() {
+	std::cerr << "Bnnn\n";
 	uint16_t address = opcode & 0x0FFFu;
 
 	pc = V[0] + address;
 }
 
 void Chip8::OP_Cxkk() {
+	std::cerr << "Cxkk\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t byte = opcode & 0x00FFu;
 
@@ -357,6 +392,7 @@ void Chip8::OP_Cxkk() {
 }
 
 void Chip8::OP_Dxyn() {
+	std::cerr << "Dxyn\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
 	uint8_t height = opcode & 0x000Fu;
@@ -389,6 +425,7 @@ void Chip8::OP_Dxyn() {
 }
 
 void Chip8::OP_Ex9E() {
+	std::cerr << "Ex9E\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 
 	uint8_t key = V[Vx];
@@ -399,6 +436,7 @@ void Chip8::OP_Ex9E() {
 }
 
 void Chip8::OP_ExA1() {
+	std::cerr << "ExA1\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 
 	uint8_t key = V[Vx];
@@ -409,12 +447,14 @@ void Chip8::OP_ExA1() {
 }
 
 void Chip8::OP_Fx07() {
+	std::cerr << "Fx07\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 
 	V[Vx] = delayTimer;
 }
 
 void Chip8::OP_Fx0A() {
+	std::cerr << "Fx0A\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 
 	if (keypad[0]) {
@@ -471,24 +511,28 @@ void Chip8::OP_Fx0A() {
 }
 
 void Chip8::OP_Fx15() {
+	std::cerr << "Fx15\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 
 	delayTimer = V[Vx];
 }
 
 void Chip8::OP_Fx18() {
+	std::cerr << "Fx18\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 
 	soundTimer = V[Vx];
 }
 
 void Chip8::OP_Fx1E() {
+	std::cerr << "Fx1E\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 
 	I += V[Vx];
 }
 
 void Chip8::OP_Fx29() {
+	std::cerr << "Fx29\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t digit = V[Vx];
 
@@ -496,6 +540,7 @@ void Chip8::OP_Fx29() {
 }
 
 void Chip8::OP_Fx33() {
+	std::cerr << "Fx33\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u; //the >> operator means shift along the binary
 	uint8_t value = V[Vx];
 
@@ -512,6 +557,7 @@ void Chip8::OP_Fx33() {
 }
 
 void Chip8::OP_Fx55() {
+	std::cerr << "Fx55\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 
 	for (uint8_t i = 0; i <= Vx; i++) {
@@ -520,6 +566,7 @@ void Chip8::OP_Fx55() {
 }
 
 void Chip8::OP_Fx65() {
+	std::cerr << "Fx65\n";
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 
 	for (uint8_t i = 0; i <= Vx; i++) {
