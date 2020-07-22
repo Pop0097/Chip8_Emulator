@@ -45,24 +45,29 @@ Chip8::Chip8():randGen(std::chrono::system_clock::now().time_since_epoch().count
 }
 //loads contents from ROM file into memory so we can execute instructions
 void Chip8::loadROM(char const* romfile) {
+	FILE* file;
 
-    std::ifstream file(romfile, std::ios::binary | std::ios::ate);  //open file as a stream of binary. File pointer moved to the end
+	// open file
+	file = fopen(romfile, "r");
+	if (!file) {
+		std::cerr << "File not loaded\n";
+		exit(2);
+	}
 
-    if(file.is_open()) {
-        //get file size and make a buffer to hold file contents
-        std::streampos size = file.tellg();
-        char* buffer = new char[size];
+	// check file size
+	fseek(file, 0L, SEEK_END);
+	uint32_t size = ftell(file);
+	rewind(file);
 
-        file.seekg(0, std::ios::beg); //go to beining of file
-        file.read(buffer, size); //read the file and fill buffer
-        file.close();
+	if (size > (MEMSIZE - START_ADD)) {
+		std::cerr << "File too large\n";
+		exit(2);
+	}
 
-        for (long i = 0; i < size; i++) {
-            memory[START_ADD + i] = buffer[i]; //loads ROM contents into Chip8 memory
-        }
+	// read rom into memory
+	fread(&memory[START_ADD], 1, size, file);
 
-        delete[] buffer; //empty buffer
-    }
+	fclose(file);
 	std::cerr << "ROM loaded\n";
 }
 
@@ -77,7 +82,7 @@ void Chip8::Cycle() {
 	// Fetchches instruction 
 	opcode = (memory[pc] << 8u) | memory[pc + 1]; //Get first digit of OP code with a bitmask and shift so it becmes a single digit from $0 to $F
 
-	std::cerr << "Binary: " <<  0xF000 << " | Mem: " << (memory[pc] << 8u) << " | Mem2: " << memory[pc + 1] <<  " | OP Code: " << opcode << " | Both: " << ((opcode & 0xF000)) << "\n";
+	//std::cerr << "Binary: " <<  0xF000 << " | Mem: " << (memory[pc] << 8u) << " | Mem2: " << memory[pc + 1] <<  " | OP Code: " << opcode << " | Both: " << ((opcode & 0xF000)) << "\n";
 
 	// Increment the PC before we execute anything (prevents a continuous loop from occuring)
 	pc += 2; 

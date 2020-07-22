@@ -8,7 +8,11 @@ I decided to tackle this project to learn more about how computers read, write, 
 
 ## Launching the Emulator
 
-
+1. Download and extract the zip file of this repository.
+2. cd into the "src" directory.
+3. Type "make chip8" to activate the Makefile.
+4. To start the emulator, type in this command: ./chip8 VIDEO_SCALE REFRESH_FREQUENCY_MILLISECONNDS ./roms/ROM_FILENAME
+    - Example: ./chip8 10 4 ./roms/tetris
 
 ## Referencs
 

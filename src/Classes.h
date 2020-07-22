@@ -12,7 +12,7 @@
 /* other constants */
 const unsigned int VIDEO_HEIGHT = 32;
 const unsigned int VIDEO_WIDTH = 64;
-
+const unsigned int  MEMSIZE = 0x1000;
 
 #ifndef CHIP_8_H
 #define CHIP_8_H
