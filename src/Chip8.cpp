@@ -41,49 +41,6 @@ Chip8::Chip8():randGen(std::chrono::system_clock::now().time_since_epoch().count
     
     randByte = std::uniform_int_distribution<uint8_t>(0, 255U); //initialize random number generator. With this we can get number between 0 and 255
 
-    // Set up function pointer table. Each element executes a different instructions of the CHIP-8 emulator
-    table[0x0] = &Chip8::Table0;
-    table[0x1] = &Chip8::OP_1nnn; 
-    table[0x2] = &Chip8::OP_2nnn;
-    table[0x3] = &Chip8::OP_3xkk;
-    table[0x4] = &Chip8::OP_4xkk;
-    table[0x5] = &Chip8::OP_5xy0;
-    table[0x6] = &Chip8::OP_6xkk;
-    table[0x7] = &Chip8::OP_7xkk;
-    table[0x8] = &Chip8::Table8;
-    table[0x9] = &Chip8::OP_9xy0;
-    table[0xA] = &Chip8::OP_Annn;
-    table[0xB] = &Chip8::OP_Bnnn;
-    table[0xC] = &Chip8::OP_Cxkk;
-    table[0xD] = &Chip8::OP_Dxyn;
-    table[0xE] = &Chip8::TableE;
-    table[0xF] = &Chip8::TableF;
-
-    table0[0x0] = &Chip8::OP_00E0;
-    table0[0xE] = &Chip8::OP_00EE;
-
-    table8[0x0] = &Chip8::OP_8xy0;
-    table8[0x1] = &Chip8::OP_8xy1;
-    table8[0x2] = &Chip8::OP_8xy2;
-    table8[0x3] = &Chip8::OP_8xy3;
-    table8[0x4] = &Chip8::OP_8xy4;
-    table8[0x5] = &Chip8::OP_8xy5;
-    table8[0x6] = &Chip8::OP_8xy6;
-    table8[0x7] = &Chip8::OP_8xy7;
-    table8[0xE] = &Chip8::OP_8xyE;
-
-    tableE[0x1] = &Chip8::OP_ExA1;
-    tableE[0xE] = &Chip8::OP_Ex9E;
-
-    tableF[0x07] = &Chip8::OP_Fx07;
-    tableF[0x0A] = &Chip8::OP_Fx0A;
-    tableF[0x15] = &Chip8::OP_Fx15;
-    tableF[0x18] = &Chip8::OP_Fx18;
-    tableF[0x1E] = &Chip8::OP_Fx1E;
-    tableF[0x29] = &Chip8::OP_Fx29;
-    tableF[0x33] = &Chip8::OP_Fx33;
-    tableF[0x55] = &Chip8::OP_Fx55;
-    tableF[0x65] = &Chip8::OP_Fx65;
 	std::cerr << "Chip8 constructed\n";
 }
 //loads contents from ROM file into memory so we can execute instructions
@@ -120,11 +77,183 @@ void Chip8::Cycle() {
 	// Fetchches instruction 
 	opcode = (memory[pc] << 8u) | memory[pc + 1]; //Get first digit of OP code with a bitmask and shift so it becmes a single digit from $0 to $F
 
+	std::cerr << "Binary: " <<  0xF000 << " | Mem: " << (memory[pc] << 8u) << " | Mem2: " << memory[pc + 1] <<  " | OP Code: " << opcode << " | Both: " << ((opcode & 0xF000)) << "\n";
+
 	// Increment the PC before we execute anything (prevents a continuous loop from occuring)
 	pc += 2; 
 
 	// Tables decode the opcode and then call one instruction accordingly
-	((*this).*(table[(opcode & 0xF000u) >> 12u]))();
+	// ((*this).*(table[(opcode & 0xF000u) >> 12u]))();
+	
+	switch(opcode & 0xF000) {
+		case 0x0000: 
+			switch(opcode & 0x00FF) {
+				case 0x00E0: 
+					this->OP_00E0();
+					break;
+
+				case 0x00EE: 
+					this->OP_00EE();
+					break;
+
+				default:
+					std::cerr << "0x0000 --> invalid op code\n";
+					exit(0);
+			}
+			break;
+		
+		case 0x1000: 
+			this->OP_1nnn();
+			break;
+		
+		case 0x2000: 
+			this->OP_2nnn();
+			break;
+		
+		case 0x3000:
+			this->OP_3xkk();
+			break;
+		
+		case 0x4000: 
+			this->OP_4xkk();
+			break;
+		
+		case 0x5000: 
+			this->OP_5xy0();
+			break;
+		
+		case 0x6000:
+			this->OP_6xkk();
+			break;
+		
+		case 0x7000: 
+			this->OP_7xkk();
+			break;
+		
+		case 0x8000: 
+			switch (opcode & 0x000F) {
+				case 0x0000: 
+					this->OP_8xy0();
+					break;
+				
+				case 0x0001: 
+					this->OP_8xy1();
+					break;
+				
+				case 0x0002: 
+					this->OP_8xy2();
+					break;
+				
+				case 0x0003: 
+					this->OP_8xy3();
+					break;
+				
+				case 0x0004: 
+					this->OP_8xy4();
+					break;
+				
+				case 0x0005: 
+					this->OP_8xy5();
+					break;
+				
+				case 0x0006: 
+					this->OP_8xy6();
+					break;
+				
+				case 0x0007: 
+					this->OP_8xy7();
+					break;
+				
+				case 0x000E: 
+					this->OP_8xyE();
+					break;
+				
+				default:
+					std::cerr << "0x8000 -> invalid opcode\n";
+					exit(0);
+			}
+			break;
+		
+		case 0x9000: 
+			this->OP_9xy0();
+			break;
+		
+		case 0xA000: 
+			this->OP_Annn();
+			break;
+		
+		case 0xB000:
+			this->OP_Bnnn();
+			break;
+		
+		case 0xC000:
+			this->OP_Cxkk(); 
+			break;
+		
+		case 0xD000:
+			this->OP_Dxyn();
+			break;
+		
+		case 0xE000:
+			switch (opcode & 0x00FF) {
+				case 0x009E:
+					this->OP_Ex9E();
+					break;
+				
+				case 0x00A1:
+					this->OP_ExA1();
+					break;
+
+				default:
+					std::cerr << "0xE000 -> invalid opcode\n";
+					exit(0);
+			}
+			break;
+		
+		case 0xF000: 
+			switch (opcode & 0x00FF) {
+				case 0x0007:
+					this->OP_Fx07();
+					break;
+				
+				case 0x000A:
+					this->OP_Fx0A();
+					break;
+					
+				case 0x0015:
+					this->OP_Fx15();
+					break;
+					
+				case 0x001E:
+					this->OP_Fx1E();
+					break;
+				
+				case 0x0029:
+					this->OP_Fx29();
+					break;
+
+				case 0x0033:
+					this->OP_Fx33();
+					break;
+
+				case 0x0055:
+					this->OP_Fx55();
+					break;
+					
+				case 0x0065:
+					this->OP_Fx65();
+					break;
+				
+				default:
+					std::cerr << "0xF000 -> invalid opcode\n";
+					exit(0);
+			}
+			break;
+
+		default:
+			std::cerr << "General -> invalid opcode \n";
+			exit(0);
+	}	
 
 	// Decrement the delay timer if it's been set
 	if (delayTimer > 0) {
@@ -136,30 +265,6 @@ void Chip8::Cycle() {
 		--soundTimer;
 	}
 	//std::cerr << "Ran through cycle\n";
-}
-
-void Chip8::Table0() {
-	std::cerr << "Table0\n";
-    ((*this).*(table0[opcode & 0x000Fu]))();
-}
-
-void Chip8::Table8() {
-	std::cerr << "Table8\n";
-    ((*this).*(table8[opcode & 0x000Fu]))();
-}
-
-void Chip8::TableE() {
-	std::cerr << "TableE\n";
-    ((*this).*(tableE[opcode & 0x000Fu]))();
-}
-
-void Chip8::TableF() {
-	std::cerr << "TableF\n";
-    ((*this).*(tableF[opcode & 0x00FFu]))();
-}
-
-void Chip8::OP_NULL() {
-	std::cerr << "Unknown OP code\n"; 
 }
 
 /* Chip8 instructions */

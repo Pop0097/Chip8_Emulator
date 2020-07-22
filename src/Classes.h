@@ -10,10 +10,6 @@
 #include <fstream> //input output stream class to operate on files
 
 /* other constants */
-const unsigned int KEY_COUNT = 16;
-const unsigned int MEMORY_SIZE = 4096;
-const unsigned int REGISTER_COUNT = 16;
-const unsigned int STACK_LEVELS = 16;
 const unsigned int VIDEO_HEIGHT = 32;
 const unsigned int VIDEO_WIDTH = 64;
 
@@ -37,12 +33,6 @@ private:
     //timer registers that count at 60 Hz.
     uint8_t delayTimer = {};
     uint8_t soundTimer = {}; //system buzzer sounds when this timer reaches 0
-
-    void Table0();
-    void Table8();
-    void TableE();
-    void TableF();
-    void OP_NULL(); //Do nothing
 
     //Chip-8 instructions are emulated in these methods (note variables such as Vx and Vy are defined within the methods)
     void OP_00E0(); //clear the display
@@ -83,13 +73,6 @@ private:
     //defines member variables that will be used to put random numbers into registers
     std::default_random_engine randGen;
     std::uniform_int_distribution<uint8_t> randByte;
-
-    typedef void (Chip8::*Chip8Func)(); //defines a pointer to functions
-	Chip8Func table[0xF + 1] = {&Chip8::OP_NULL};
-	Chip8Func table0[0xE + 1] = {&Chip8::OP_NULL};
-	Chip8Func table8[0xE + 1] = {&Chip8::OP_NULL};
-	Chip8Func tableE[0xE + 1] = {&Chip8::OP_NULL};
-	Chip8Func tableF[0x65 + 1] = {&Chip8::OP_NULL};
 
 public:
     Chip8();
