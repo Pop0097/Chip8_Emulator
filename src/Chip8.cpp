@@ -27,7 +27,7 @@ unsigned char chip8_fontset[FONTSET_SIZE] = { //defines all fonts. Each characte
     0xF0, 0x80, 0xF0, 0x80, 0x80  //F
 };
 
-/*Start addresses*/
+/* Start addresses */
 const unsigned int START_ADD = 0x200; //start address for the program counter
 const unsigned int FONTSET_START_ADD = 0x50; 
 
@@ -43,7 +43,8 @@ Chip8::Chip8():randGen(std::chrono::system_clock::now().time_since_epoch().count
 
 	std::cerr << "Chip8 constructed\n";
 }
-//loads contents from ROM file into memory so we can execute instructions
+
+/* Loads contents from ROM file into memory so we can execute instructions */
 void Chip8::loadROM(char const* romfile) {
 	FILE* file;
 
@@ -73,22 +74,20 @@ void Chip8::loadROM(char const* romfile) {
 
 void Chip8::Cycle() {
 	/*
-		A cycle includes three things:
-			1. fetch next instructino in the form of an opcode
-			2. decode the instruction to determine what operation needs to occur (done using "table" function pointer)
-			3. execute the instruction (done in instruction methods below)
+		Steps iterated in each cycle:
+			1. Fetch next cpu instruction from the opcode.
+			2. Decode the instruction to determine which operation needs to take place (done using the switch statement).
+			3. Execute the instruction (done in instruction methods below)
 	*/
 
 	// Fetchches instruction 
 	opcode = (memory[pc] << 8u) | memory[pc + 1]; //Get first digit of OP code with a bitmask and shift so it becmes a single digit from $0 to $F
 
-	//std::cerr << "Binary: " <<  0xF000 << " | Mem: " << (memory[pc] << 8u) << " | Mem2: " << memory[pc + 1] <<  " | OP Code: " << opcode << " | Both: " << ((opcode & 0xF000)) << "\n";
+	// For debugging purposes
+	// std::cerr << "Binary: " <<  0xF000 << " | Mem: " << (memory[pc] << 8u) << " | Mem2: " << memory[pc + 1] <<  " | OP Code: " << opcode << " | Both: " << ((opcode & 0xF000)) << "\n";
 
-	// Increment the PC before we execute anything (prevents a continuous loop from occuring)
+	// Increment the PC before executing anything (prevents a continuous loop from occuring)
 	pc += 2; 
-
-	// Tables decode the opcode and then call one instruction accordingly
-	// ((*this).*(table[(opcode & 0xF000u) >> 12u]))();
 	
 	switch(opcode & 0xF000) {
 		case 0x0000: 
@@ -269,10 +268,11 @@ void Chip8::Cycle() {
 	if (soundTimer > 0) {
 		--soundTimer;
 	}
-	//std::cerr << "Ran through cycle\n";
 }
 
-/* Chip8 instructions */
+
+/* Chip8 instruction methods (To understand what each operation does, refer to Classes.h) */
+
 void Chip8::OP_00E0() {
 
 	std::cerr << "00E0\n";
