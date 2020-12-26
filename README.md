@@ -1,6 +1,6 @@
 # Chip8_Emulator
 
-A Chip8 emulator built using C++. 
+A Chip-8 emulator built using C++. 
 
 ## Inspiration
 
